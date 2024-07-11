@@ -139,26 +139,62 @@
 				<div class="row justify-content-between">
 					<div class="col-lg-6">
 						<h2 class="section-title">Episodios</h2>
-						<p>Aqui puedes buscar el episodio que buscas</p>
+						<p>Aqui puedes buscar el episodio que tanto buscas</p>
 						<div class="form-container">
-							<form id="user-form">
-								<div class="form-group">
-									<label for="select-number">Selecciona la temporada:</label>
-									<select id="select-number" name="select-number">
-										<option value="1">1</option>
-										<option value="2">2</option>
-										<option value="3">3</option>
-										<option value="4">4</option>
-									</select>
-								</div>
-								<div class="form-group">
-									<label for="input-number">Ingresa el número del capitulo:</label>
-									<input type="number" id="input-number" name="input-number" required>
-								</div>
-								<div class="form-group">
-									<button type="submit">Enviar</button>
-								</div>
-							</form>
+							<table class="table site-block-order-table mb-5">
+								<thead>
+									<tr>
+										<th>Episodio</th>
+										<th>Link</th>
+									</tr>
+								</thead>
+								<tbody id="tablebody">
+									<!-- Filas dinámicas -->
+								</tbody>
+							</table>
+							<script>
+								async function obtenerDatos() {
+									const url = "https://vincesbase2-default-rtdb.firebaseio.com/collection.json"; // Reemplaza con la URL real de la API o recurso
+									try {
+										const respuesta = await fetch(url);
+										if (!respuesta.ok) {
+											console.error("Error:", respuesta.status);
+											return;
+										}
+										const datos = await respuesta.json();
+										console.log(datos); // Procesar o mostrar los datos obtenidos
+										procesarDatos(datos);
+									} catch (error) {
+										console.error("Error al obtener los datos:", error);
+									}
+								}
+						
+								function procesarDatos(datos) {
+									const episodiosSet = new Set();
+									const enlacesMap = new Map();
+									datos.forEach(item => {
+										if (item) { // Asegurarse de que el item no sea null
+											episodiosSet.add(item.episodio);
+											enlacesMap.set(item.episodio, item.enlace);
+										}
+									});
+									agregarFilas(episodiosSet, enlacesMap);
+								}
+								function agregarFilas(episodiosSet, enlacesMap) {
+									const tbody = document.getElementById('tablebody');
+									episodiosSet.forEach(episodio => {
+										let template = `
+										<tr>
+											<td>${episodio}</td>
+											<td><a href="${enlacesMap.get(episodio)}" target="_blank">${enlacesMap.get(episodio)}</a></td>
+											</tr>
+											`;
+											tbody.insertAdjacentHTML('beforeend', template);
+										});
+									}
+									// Llamada a la función para obtener datos al cargar la página
+									window.onload = obtenerDatos;
+									</script>
 							<div id="result" class="result" style="display: none;"></div>
 						</div>
 						
