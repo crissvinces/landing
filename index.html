@@ -177,20 +177,20 @@
 						<div class="subscription-form">
 							<h3 class="d-flex align-items-center"><span class="me-1"></span><span>Suscribete!</span></h3>
 
-							<form action="#" class="row g-3" id="form">
+							<form action="#" class="row g-3" id="formulario2">
 								<div class="col-auto">
-									<input id="nombre" type="text" class="form-control" placeholder="Enter your name">
+									<input id="nombre_form" type="text" class="form-control" placeholder="Enter your name">
 								</div>
 								<div class="col-auto">
-									<input id="correo" type="email" class="form-control" placeholder="Enter your email">
+									<input id="correo_form" type="email" class="form-control" placeholder="Enter your email">
 								</div>
 								<div class="col-auto">
 									<label for="interes">Selecciona tu interés principal:</label>
-                					<select id="interes" name="interes" required>
+                					<select id="interes_form" name="interes" required>
                     					<option value="">Selecciona una opción</option>
                     					<option value="Noticias">Noticias y Actualizaciones</option>
                     					<option value="Analisis">Análisis y Teorías</option>
-                    					<option value="Galeria">Nuevos episodios</option>
+                    					<option value="Episodios">Nuevos episodios</option>
                 					</select>
 								</div>
 								<div class="col-auto">
@@ -199,7 +199,32 @@
 									</button>
 								</div>
 							</form>
-
+							<script>
+								const formulario = document.getElementById('formulario2');
+								formulario.addEventListener('submit', (event) => {
+								event.preventDefault();
+								const nombre = document.getElementById('nombre_form').value;
+								const email = document.getElementById('correo_form').value;
+								const interes = document.getElementById('interes_form').value;
+								const datos = {
+								nombre: nombre,
+								email: email,
+								interes: interes
+							};
+							fetch('https://vincescristhiandawm-default-rtdb.firebaseio.com/collection.json', {
+								method: 'POST',
+								body: JSON.stringify(datos),
+								headers: {
+									'Content-Type': 'application/json'
+								}
+							})
+							.then(respuesta => respuesta.json())
+							.then(datos => {
+								console.log(datos); // Imprimir la respuesta del servidor
+								})
+								.catch(error => console.error(error));
+								});
+								</script>
 						</div>
 					</div>
 				</div>
